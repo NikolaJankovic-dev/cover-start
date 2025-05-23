@@ -9,8 +9,8 @@ interface ResultProps {
 
 const filterStyles = [
   [0.7, 0, 0.2, 0, 0, 0, 1, 0.1, 0, 0, 0, 0, 0.6, 0, 0.3, 0, 0, 0, 1, 0],
-  "hue-rotate(-20deg) saturate(120%) brightness(110%)",
-  "hue-rotate(15deg) saturate(110%)",
+  [1.1, 0.1, 0.1, 0, 0, 0, 1.1, 0.1, 0, 0, 0, 0.2, 0.7, 0, 0, 0, 0, 0, 1, 0],
+  [0.8, 0.3, 0.1, 0, 0, 0, 0.8, 0, 0, 0, 0, 0, 0.8, 0, 0, 0, 0, 0, 1, 0],
 ];
 
 const Result = ({
@@ -79,28 +79,29 @@ const Result = ({
       /> */}
       <ImageFilter
         image={chosenImage || ""}
-        filter={[
-          redToRed,
-          greenToRed,
-          blueToRed,
-          alphaToRed,
-          addToRed,
-          redToGreen,
-          greenToGreen,
-          blueToGreen,
-          alphaToGreen,
-          addToGreen,
-          redToBlue,
-          greenToBlue,
-          blueToBlue,
-          alphaToBlue,
-          addToBlue,
-          redToAlpha,
-          greenToAlpha,
-          blueToAlpha,
-          alphaToAlpha,
-          addToAlpha,
-        ]} // see docs beneath
+        filter={filterStyles[selectedFilter - 1]}
+        // filter={[
+        //   redToRed,
+        //   greenToRed,
+        //   blueToRed,
+        //   alphaToRed,
+        //   addToRed,
+        //   redToGreen,
+        //   greenToGreen,
+        //   blueToGreen,
+        //   alphaToGreen,
+        //   addToGreen,
+        //   redToBlue,
+        //   greenToBlue,
+        //   blueToBlue,
+        //   alphaToBlue,
+        //   addToBlue,
+        //   redToAlpha,
+        //   greenToAlpha,
+        //   blueToAlpha,
+        //   alphaToAlpha,
+        //   addToAlpha,
+        // ]}
       />
 
       {/* Controls */}
@@ -108,7 +109,7 @@ const Result = ({
         <div className="flex flex-col gap-2">
           <p className="font-bold">Red Channel</p>
           <div className="flex flex-col">
-            <p>Red to red</p>
+            <p>Red to red {redToRed}</p>
             <input
               type="range"
               min="0"
@@ -119,7 +120,7 @@ const Result = ({
             />
           </div>
           <div className="flex flex-col">
-            <p>Green to red</p>
+            <p>Green to red {greenToRed}</p>
             <input
               type="range"
               min="0"
@@ -130,7 +131,7 @@ const Result = ({
             />
           </div>
           <div className="flex flex-col">
-            <p>Blue to red</p>
+            <p>Blue to red {blueToRed}</p>
             <input
               type="range"
               min="0"
@@ -141,7 +142,7 @@ const Result = ({
             />
           </div>
           <div className="flex flex-col">
-            <p>Alpha to red</p>
+            <p>Alpha to red {alphaToRed}</p>
             <input
               type="range"
               min="0"
@@ -152,7 +153,7 @@ const Result = ({
             />
           </div>
           <div className="flex flex-col">
-            <p>Add to red</p>
+            <p>Add to red {addToRed}</p>
             <input
               type="range"
               min="0"
@@ -166,7 +167,7 @@ const Result = ({
         <div className="flex flex-col gap-2">
           <p className="font-bold">Green Channel</p>
           <div className="flex flex-col">
-            <p>Red to green</p>
+            <p>Red to green {redToGreen}</p>
             <input
               type="range"
               min="0"
@@ -177,7 +178,7 @@ const Result = ({
             />
           </div>
           <div className="flex flex-col">
-            <p>Green to green</p>
+            <p>Green to green {greenToGreen}</p>
             <input
               type="range"
               min="0"
@@ -188,7 +189,7 @@ const Result = ({
             />
           </div>
           <div className="flex flex-col">
-            <p>Blue to green</p>
+            <p>Blue to green {blueToGreen}</p>
             <input
               type="range"
               min="0"
@@ -199,7 +200,7 @@ const Result = ({
             />
           </div>
           <div className="flex flex-col">
-            <p>Alpha to green</p>
+            <p>Alpha to green {alphaToGreen}</p>
             <input
               type="range"
               min="0"
@@ -210,7 +211,7 @@ const Result = ({
             />
           </div>
           <div className="flex flex-col">
-            <p>Add to green</p>
+            <p>Add to green {addToGreen}</p>
             <input
               type="range"
               min="0"
@@ -224,7 +225,7 @@ const Result = ({
         <div className="flex flex-col gap-2">
           <p className="font-bold">Blue Channel</p>
           <div className="flex flex-col">
-            <p>Red to blue</p>
+            <p>Red to blue {redToBlue}</p>
             <input
               type="range"
               min="0"
@@ -235,7 +236,7 @@ const Result = ({
             />
           </div>
           <div className="flex flex-col">
-            <p>Green to blue</p>
+            <p>Green to blue {greenToBlue}</p>
             <input
               type="range"
               min="0"
@@ -246,7 +247,7 @@ const Result = ({
             />
           </div>
           <div className="flex flex-col">
-            <p>Blue to blue</p>
+            <p>Blue to blue {blueToBlue}</p>
             <input
               type="range"
               min="0"
@@ -257,7 +258,7 @@ const Result = ({
             />
           </div>
           <div className="flex flex-col">
-            <p>Alpha to blue</p>
+            <p>Alpha to blue {alphaToBlue}</p>
             <input
               type="range"
               min="0"
@@ -268,7 +269,7 @@ const Result = ({
             />
           </div>
           <div className="flex flex-col">
-            <p>Add to blue</p>
+            <p>Add to blue {addToBlue}</p>
             <input
               type="range"
               min="0"
@@ -283,7 +284,7 @@ const Result = ({
         <div className="flex flex-col gap-2">
           <p className="font-bold">Alpha Channel</p>
           <div className="flex flex-col">
-            <p>Red to alpha</p>
+            <p>Red to alpha {redToAlpha}</p>
             <input
               type="range"
               min="0"
@@ -294,7 +295,7 @@ const Result = ({
             />
           </div>
           <div className="flex flex-col">
-            <p>Green to alpha</p>
+            <p>Green to alpha {greenToAlpha}</p>
             <input
               type="range"
               min="0"
@@ -305,7 +306,7 @@ const Result = ({
             />
           </div>
           <div className="flex flex-col">
-            <p>Blue to alpha</p>
+            <p>Blue to alpha {blueToAlpha}</p>
             <input
               type="range"
               min="0"
@@ -316,7 +317,7 @@ const Result = ({
             />
           </div>
           <div className="flex flex-col">
-            <p>Alpha to alpha</p>
+            <p>Alpha to alpha {alphaToAlpha}</p>
             <input
               type="range"
               min="0"
@@ -327,7 +328,7 @@ const Result = ({
             />
           </div>
           <div className="flex flex-col">
-            <p>Add to alpha</p>
+            <p>Add to alpha {addToAlpha}</p>
             <input
               type="range"
               min="0"
