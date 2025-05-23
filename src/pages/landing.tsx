@@ -3,7 +3,7 @@ import landing from "@/assets/images/landing.png";
 const Landing = () => {
   return (
     <div
-      className="w-full h-full flex flex-col gap-0 items-center justify-end pb-44 text-center"
+      className="w-full h-full flex flex-col gap-0 items-center justify-end pb-40 text-center"
       style={{
         backgroundImage: `url(${landing})`,
         backgroundSize: "cover",
@@ -12,7 +12,7 @@ const Landing = () => {
       }}
     >
       <p
-        className="text-7xl hackney-vector"
+        className="text-5xl hackney-vector"
         style={{
           background: "#ffffff",
           WebkitBackgroundClip: "text",
@@ -22,7 +22,7 @@ const Landing = () => {
         BECOME THE
       </p>
       <p
-        className=" text-9xl hackney-vector"
+        className=" text-7xl hackney-vector"
         style={{
           background: "#ffffff",
           WebkitBackgroundClip: "text",
@@ -32,7 +32,7 @@ const Landing = () => {
       >
         COVER STAR
       </p>
-      <p className="text-white text-4xl mt-4">
+      <p className="text-white text-2xl mt-4">
         Upload your photo and give it a <br/> unique touch.
       </p>
     </div>

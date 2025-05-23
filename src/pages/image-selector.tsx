@@ -1,4 +1,7 @@
 import { useState, useEffect, useRef } from "react";
+import upload from "@/assets/images/icons/upload.png";
+import capture from "@/assets/images/icons/capture.png";
+import { Check, RefreshCcw, SwitchCamera } from "lucide-react";
 
 interface ImageSelectorProps {
   onImageCapture: (imageData: string) => void;
@@ -13,11 +16,30 @@ interface ImageSelectorProps {
 interface ImageUploadProps {
   setChosenImage: (imageData: string | null) => void;
   setIsCapturedImage: (isCaptured: boolean) => void;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
 }
 
-const ImageUpload = ({ setChosenImage, setIsCapturedImage }: ImageUploadProps) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+interface CameraButtonProps {
+  onClick: () => void;
+}
 
+interface CameraSwitchButtonProps {
+  onClick: () => void;
+}
+
+interface SubmitButtonProps {
+  onClick: () => void;
+}
+
+interface ResetButtonProps {
+  onClick: () => void;
+}
+
+const ImageUpload = ({
+  setChosenImage,
+  setIsCapturedImage,
+  fileInputRef,
+}: ImageUploadProps) => {
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -41,11 +63,52 @@ const ImageUpload = ({ setChosenImage, setIsCapturedImage }: ImageUploadProps) =
       />
       <button
         onClick={() => fileInputRef.current?.click()}
-        className="bg-white text-black px-4 py-2 rounded-md"
+        className="rounded-full"
       >
-        Upload slike
+        <img src={upload} alt="Upload" className="w-10 h-10" />
       </button>
     </div>
+  );
+};
+
+const CameraButton = ({ onClick }: CameraButtonProps) => {
+  return (
+    <button onClick={onClick} className="rounded-full">
+      <img src={capture} alt="Capture" className="w-14 h-14" />
+    </button>
+  );
+};
+
+const CameraSwitchButton = ({ onClick }: CameraSwitchButtonProps) => {
+  return (
+    <button
+      onClick={onClick}
+      className="rounded-full border-2 border-white p-3 bg-[#37373770]"
+    >
+      <SwitchCamera className="w-3 h-3 text-white" strokeWidth={1} />
+    </button>
+  );
+};
+
+const SubmitButton = ({ onClick }: SubmitButtonProps) => {
+  return (
+    <button
+      onClick={onClick}
+      className="rounded-full border border-white p-1.5  flex items-center justify-center"
+    >
+      <Check className="w-10.5 h-10.5 text-white rounded-full border-2 bg-radial from-green-500 to-green-900 border-white p-2.5 font-bold" strokeWidth={3.5} />
+    </button>
+  );
+};
+
+const ResetButton = ({ onClick }: ResetButtonProps) => {
+  return (
+    <button
+      onClick={onClick}
+      className="rounded-full border-2 border-white p-3 bg-[#37373770]"
+    >
+      <RefreshCcw className="w-3 h-3 text-white" strokeWidth={1} />
+    </button>
   );
 };
 
@@ -62,6 +125,7 @@ const ImageSelector = ({
   const [cameraError, setCameraError] = useState<DOMException | null>(null);
   const [facingMode, setFacingMode] = useState<"user" | "environment">("user");
   const videoRef = useRef<HTMLVideoElement>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const startCamera = async (mode: "user" | "environment") => {
     try {
@@ -123,6 +187,9 @@ const ImageSelector = ({
 
   const handleReset = () => {
     setChosenImage(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
     startCamera(facingMode);
     setIsCapturedImage(false);
   };
@@ -135,19 +202,17 @@ const ImageSelector = ({
   const getCameraErrorMessage = (err: DOMException): string => {
     switch (err?.name) {
       case "NotAllowedError":
-        return "Niste dozvolili pristup kameri. Dozvolite pristup u podešavanjima ili nastavite sa uploadom slike.";
+        return "Camera access denied. Please enable camera permissions or upload an image instead.";
       case "NotFoundError":
-        return "Nismo pronašli nijednu kameru. Možete umesto toga uploadovati sliku.";
+        return "Please upload an image.";
       case "NotReadableError":
-        return "Kamera je trenutno zauzeta. Zatvorite druge aplikacije koje je koriste.";
+        return "Camera is currently in use. Please close other applications using the camera or upload an image instead.";
       case "OverconstrainedError":
-        return "Ova kamera ne podržava tražene parametre. Pokušajte sa drugom.";
-      case "SecurityError":
-        return "Aplikacija mora biti pokrenuta preko sigurnog HTTPS protokola.";
+        return "Camera doesn't support required parameters. Please try another camera.";
       case "AbortError":
-        return "Nešto je pošlo po zlu prilikom pristupa kameri.";
+        return "An error occurred while accessing the camera.";
       default:
-        return "Nepoznata greška pri pristupu kameri.";
+        return "Unknown camera access error.";
     }
   };
 
@@ -160,25 +225,17 @@ const ImageSelector = ({
           className={`${
             isCapturedImage
               ? "w-full h-full object-cover"
-              : "max-w-full max-h-full object-contain"
+              : "w-full h-full object-contain"
           }`}
         />
         <div className="absolute bottom-10 left-0 right-0 p-4 flex justify-between items-center">
-          <ImageUpload setChosenImage={setChosenImage} setIsCapturedImage={setIsCapturedImage} />
-          <button
-            className="bg-white text-black px-4 py-2 rounded-md"
-            onClick={handleSubmit}
-          >
-            Submit
-          </button>
-        
-            <button
-              className="bg-white text-black px-4 py-2 rounded-md"
-              onClick={handleReset}
-            >
-              Ponovo
-            </button>
-          
+          <ImageUpload
+            setChosenImage={setChosenImage}
+            setIsCapturedImage={setIsCapturedImage}
+            fileInputRef={fileInputRef}
+          />
+          <SubmitButton onClick={handleSubmit} />
+          <ResetButton onClick={handleReset} />
         </div>
       </div>
     );
@@ -186,10 +243,17 @@ const ImageSelector = ({
 
   if (cameraError) {
     return (
-      <div>
-        {getCameraErrorMessage(cameraError)}
+      <div className="w-full h-full flex items-center justify-center">
+        <p className="text-white text-2xl text-center px-4">
+          {" "}
+          {getCameraErrorMessage(cameraError)}
+        </p>
         <div className="absolute bottom-10 left-0 right-0 p-4 flex justify-between items-center">
-          <ImageUpload setChosenImage={setChosenImage} setIsCapturedImage={setIsCapturedImage} />
+          <ImageUpload
+            setChosenImage={setChosenImage}
+            setIsCapturedImage={setIsCapturedImage}
+            fileInputRef={fileInputRef}
+          />
         </div>
       </div>
     );
@@ -206,19 +270,13 @@ const ImageSelector = ({
         />
       )}
       <div className="absolute bottom-10 left-0 right-0 p-4 flex justify-between items-center">
-        <ImageUpload setChosenImage={setChosenImage} setIsCapturedImage={setIsCapturedImage} />
-        <button
-          className="bg-white text-black px-4 py-2 rounded-md"
-          onClick={handleCapture}
-        >
-          Slikanje
-        </button>
-        <button
-          className="bg-white text-black px-4 py-2 rounded-md"
-          onClick={handleCameraSwitch}
-        >
-          Promena kamere
-        </button>
+        <ImageUpload
+          setChosenImage={setChosenImage}
+          setIsCapturedImage={setIsCapturedImage}
+          fileInputRef={fileInputRef}
+        />
+        <CameraButton onClick={handleCapture} />
+        <CameraSwitchButton onClick={handleCameraSwitch} />
       </div>
     </div>
   );
