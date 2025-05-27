@@ -96,7 +96,7 @@ const SubmitButton = ({ onClick }: SubmitButtonProps) => {
       onClick={onClick}
       className="rounded-full border border-white p-1.5  flex items-center justify-center"
     >
-      <Check className="w-10.5 h-10.5 text-white rounded-full border-2 bg-radial from-green-500 to-green-900 border-white p-2.5 font-bold" strokeWidth={3.5} />
+      <Check className="w-10.5 h-10.5 text-white rounded-full border-2 bg-radial from-gray-500 to-gray-700 border-white p-2.5 font-bold" strokeWidth={3.5} />
     </button>
   );
 };
@@ -117,7 +117,6 @@ const ImageSelector = ({
   chosenImage,
   setChosenImage,
   setIsCapturedImage,
-  isCapturedImage = false,
   setStep,
   setHideContainer,
 }: ImageSelectorProps) => {
@@ -172,13 +171,44 @@ const ImageSelector = ({
 
   const handleCapture = () => {
     if (videoRef.current) {
+      // Dimenzije prikaza na ekranu
+      const displayWidth = videoRef.current.clientWidth;
+      const displayHeight = videoRef.current.clientHeight;
+      // Dimenzije originalnog videa sa kamere
+      const videoWidth = videoRef.current.videoWidth;
+      const videoHeight = videoRef.current.videoHeight;
+
+      // Odnos širine i visine prikaza i originala
+      const displayAspect = displayWidth / displayHeight;
+      const videoAspect = videoWidth / videoHeight;
+
+      let sx = 0, sy = 0, sWidth = videoWidth, sHeight = videoHeight;
+      if (displayAspect > videoAspect) {
+        // Ekran je širi od videa, cropuj visinu
+        sHeight = videoWidth / displayAspect;
+        sy = (videoHeight - sHeight) / 2;
+      } else {
+        // Ekran je uži od videa, cropuj širinu
+        sWidth = videoHeight * displayAspect;
+        sx = (videoWidth - sWidth) / 2;
+      }
+
+      // Canvas je iste veličine kao prikaz na ekranu
       const canvas = document.createElement("canvas");
-      canvas.width = videoRef.current.videoWidth;
-      canvas.height = videoRef.current.videoHeight;
+      canvas.width = displayWidth;
+      canvas.height = displayHeight;
       const ctx = canvas.getContext("2d");
 
       if (ctx) {
-        ctx.drawImage(videoRef.current, 0, 0);
+        if (facingMode === "user") {
+          ctx.translate(canvas.width, 0);
+          ctx.scale(-1, 1);
+        }
+        ctx.drawImage(
+          videoRef.current,
+          sx, sy, sWidth, sHeight, // izvorni crop
+          0, 0, canvas.width, canvas.height // destinacija
+        );
         const imageData = canvas.toDataURL("image/jpeg");
         onImageCapture(imageData);
       }
@@ -222,11 +252,7 @@ const ImageSelector = ({
         <img
           src={chosenImage}
           alt="Chosen"
-          className={`${
-            isCapturedImage
-              ? "w-full h-full object-cover"
-              : "w-full h-full object-contain"
-          }`}
+          className="w-full h-full object-cover"
         />
         <div className="absolute bottom-10 left-0 right-0 p-4 flex justify-between items-center">
           <ImageUpload
@@ -265,7 +291,7 @@ const ImageSelector = ({
         <video
           autoPlay
           playsInline
-          className="w-full h-full object-cover"
+          className={`w-full h-full object-cover ${facingMode === "user" ? "scale-x-[-1]" : ""}`}
           ref={videoRef}
         />
       )}

@@ -135,7 +135,7 @@ const Result = ({
         image={chosenImage || ""}
         filter={filterStyles[selectedFilter]}
         className="h-full w-full object-contain"
-        preserveAspectRatio={isCapturedImage ? "none" : "preserveAspectRatio"}
+        preserveAspectRatio={isCapturedImage ? "preserveAspectRatio" : "preserveAspectRatio"}
       />
 
       {/* Originalna slika na početku */}

@@ -7,13 +7,16 @@ import {
 } from "@/components/ui/carousel";
 import message from "@/assets/images/icons/message.png";
 import { type UseEmblaCarouselType } from "embla-carousel-react";
+
 interface StyleCarouselProps {
   activeSlide: number;
   setActiveSlide: (slide: number) => void;
+  carouselApi: React.RefObject<UseEmblaCarouselType[1] | null>;
+  setStep: (step: number) => void;
 }
-type CarouselApi = UseEmblaCarouselType[1]
-export function StyleCarousel({ activeSlide, setActiveSlide }: StyleCarouselProps) {
-  const [api, setApi] = useState<CarouselApi | null>(null);
+
+export function StyleCarousel({ activeSlide, setActiveSlide, carouselApi, setStep }: StyleCarouselProps) {
+  const [api, setApi] = useState<UseEmblaCarouselType[1] | null>(null);
 
   useEffect(() => {
     if (!api) return;
@@ -22,6 +25,12 @@ export function StyleCarousel({ activeSlide, setActiveSlide }: StyleCarouselProp
       setActiveSlide(api.selectedScrollSnap());
     });
   }, [api]);
+
+  useEffect(() => {
+    if (api) {
+      carouselApi.current = api;
+    }
+  }, [api, carouselApi]);
 
   return (
     <Carousel
@@ -42,7 +51,7 @@ export function StyleCarousel({ activeSlide, setActiveSlide }: StyleCarouselProp
               }`}
             >
               {activeSlide + 1 === index && (
-                <img src={message} alt="message" className="w-6 h-6" />
+                <img src={message} alt="message" className="w-6 h-6 cursor-pointer" onClick={() => setStep(3)}/>
               )}
               <span className=" font-semibold">
                 {index > 0 && index < 4 ? `Style ${index}` : ""}

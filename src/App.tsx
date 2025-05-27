@@ -98,6 +98,7 @@ function App() {
               <FilterSelector
                 setSelectedFilter={setSelectedFilter}
                 selectedFilter={selectedFilter}
+                setStep={setStep}
               />
             </motion.div>
           )}
