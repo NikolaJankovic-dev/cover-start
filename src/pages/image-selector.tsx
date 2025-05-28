@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import upload from "@/assets/images/icons/upload.png";
 import capture from "@/assets/images/icons/capture.png";
-import { Check, RefreshCcw, SwitchCamera } from "lucide-react";
+import { RefreshCcw, SwitchCamera } from "lucide-react";
+import forward from "@/assets/images/icons/forward.png";
 
 interface ImageSelectorProps {
   onImageCapture: (imageData: string) => void;
@@ -94,9 +95,13 @@ const SubmitButton = ({ onClick }: SubmitButtonProps) => {
   return (
     <button
       onClick={onClick}
-      className="rounded-full border border-white p-1.5  flex items-center justify-center"
+      className="rounded-full flex items-center justify-center gap-4 text-white text-2xl cursor-pointer"
+      style={{
+        textShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+      }}
     >
-      <Check className="w-10.5 h-10.5 text-white rounded-full border-2 bg-radial from-gray-500 to-gray-700 border-white p-2.5 font-bold" strokeWidth={3.5} />
+      {/* <Check className="w-10.5 h-10.5 text-white rounded-full border-2 bg-radial from-green-500 to-green-900 border-white p-2.5 font-bold" strokeWidth={3.5} /> */}
+      Next <img src={forward} alt="forward" className="w-8 h-8" />
     </button>
   );
 };
@@ -182,7 +187,10 @@ const ImageSelector = ({
       const displayAspect = displayWidth / displayHeight;
       const videoAspect = videoWidth / videoHeight;
 
-      let sx = 0, sy = 0, sWidth = videoWidth, sHeight = videoHeight;
+      let sx = 0,
+        sy = 0,
+        sWidth = videoWidth,
+        sHeight = videoHeight;
       if (displayAspect > videoAspect) {
         // Ekran je širi od videa, cropuj visinu
         sHeight = videoWidth / displayAspect;
@@ -206,8 +214,14 @@ const ImageSelector = ({
         }
         ctx.drawImage(
           videoRef.current,
-          sx, sy, sWidth, sHeight, // izvorni crop
-          0, 0, canvas.width, canvas.height // destinacija
+          sx,
+          sy,
+          sWidth,
+          sHeight, // izvorni crop
+          0,
+          0,
+          canvas.width,
+          canvas.height // destinacija
         );
         const imageData = canvas.toDataURL("image/jpeg");
         onImageCapture(imageData);
@@ -218,7 +232,7 @@ const ImageSelector = ({
   const handleReset = () => {
     setChosenImage(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = "";
     }
     startCamera(facingMode);
     setIsCapturedImage(false);
@@ -291,7 +305,9 @@ const ImageSelector = ({
         <video
           autoPlay
           playsInline
-          className={`w-full h-full object-cover ${facingMode === "user" ? "scale-x-[-1]" : ""}`}
+          className={`w-full h-full object-cover ${
+            facingMode === "user" ? "scale-x-[-1]" : ""
+          }`}
           ref={videoRef}
         />
       )}
